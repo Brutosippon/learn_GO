@@ -8,18 +8,16 @@ import (
 )
 
 type book struct {
-	ID      string `json:"id"`
-	Title   string `json:"title"`
-	Author  string `json:"author"`
-	Quality string `json:"quality"`
+	ID       string `json:"id"`
+	Title    string `json:"title"`
+	Author   string `json:"author"`
+	Quantity int    `json:"quantity"`
 }
 
 var books = []book{
-	{ID: "1", Title: "The Hitchhiker's Guide to the Galaxy", Author: "Douglas Adams", Quality: "Good"},
-	{ID: "2", Title: "The Hobbit", Author: "J.R.R. Tolkien", Quality: "Good"},
-	{ID: "3", Title: "The Lord of the Rings", Author: "J.R.R. Tolkien", Quality: "Good"},
-	{ID: "4", Title: "The Silmarillion", Author: "J.R.R. Tolkien", Quality: "Good"},
-	{ID: "5", Title: "The C Programming Language", Author: "Brian W. Kernighan, Dennis M. Ritchie", Quality: "Good"},
+	{ID: "1", Title: "The Hitchhiker's Guide to the Galaxy", Author: "Douglas Adams", Quantity: 2},
+	{ID: "2", Title: "The Hobbit", Author: "J.R.R. Tolkien", Quantity: 2},
+	{ID: "3", Title: "The Lord of the Rings", Author: "J.R.R. Tolkien", Quantity: 2},
 }
 
 // "c *gin" is a pointer to the context, or the current state of the application (request, response, etc.)
@@ -28,9 +26,26 @@ func getBooks(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, books)
 }
 
+func createBook(c *gin.Context) {
+	var newBook book
+	// Call BindJSON to bind the received JSON to newBook
+	if err := c.BindJSON(&newBook); err != nil {
+		return
+	}
+	// Add the new book to the slice.
+	books = append(books, newBook)
+	c.IndentedJSON(http.StatusCreated, newBook)
+}
+
+/*
+Test POST with PowerShell:
+Invoke-WebRequest -Uri 'http://localhost:8081/books' -Method POST -Headers @{"Content-Type"="application/json"} -InFile 'body.json'
+*/
+
 func main() {
 	router := gin.Default()
 	router.GET("/books", getBooks)
+	router.POST("/books", createBook)
 	/*router.GET("/books/:id", getBookByID)
 	router.POST("/books", addBook)
 	router.PUT("/books/:id", updateBook)
