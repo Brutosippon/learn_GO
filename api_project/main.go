@@ -94,5 +94,15 @@ func main() {
 	router.GET("/books/:id", getBookByID)
 	router.PUT("/books/:id", updateBook)
 	router.DELETE("/books/:id", deleteBook)
+
+	router.LoadHTMLGlob("templates/*") // Load HTML templates from the "templates" directory.
+
+	// Define a route for the home page.
+	router.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "home.html", gin.H{
+			"Books": books,
+		})
+	})
+
 	router.Run("localhost:8081")
 }

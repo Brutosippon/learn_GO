@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Book Management</title>
+</head>
+<body>
+    <h1>Book Management</h1>
+    <form method="POST" action="/books">
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" required>
+        <label for="author">Author:</label>
+        <input type="text" id="author" name="author" required>
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" name="quantity" required>
+        <button type="submit">Create Book</button>
+    </form>
+    <br>
+    <h2>Books</h2>
+    <ul>
+        {{range .Books}}
+            <li>{{.Title}} by {{.Author}} (Quantity: {{.Quantity}})
+                <form method="POST" action="/books/{{.ID}}">
+                    <button type="submit">Update</button>
+                </form>
+                <form method="POST" action="/books/{{.ID}}" style="display: inline;">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
+        {{end}}
+    </ul>
+</body>
+</html>
+
+
